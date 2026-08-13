@@ -1,0 +1,1 @@
+{"root":["./src/main.tsx","./src/app/app.tsx","./src/data/seeddata.ts","./src/features/reports/reportissueform.tsx","./src/features/reports/reportlist.tsx","./src/features/reports/report.utils.ts","./src/features/reports/types.ts","./src/features/trailers/trailerboard.tsx","./src/features/trailers/trailercard.tsx","./src/features/trailers/trailer.types.ts"],"version":"5.7.3"}

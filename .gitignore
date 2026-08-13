@@ -1,0 +1,6 @@
+git rm -r --cached node_modules
+git rm --cached tsconfig.app.tsbuildinfo
+git add .gitignore
+git add .
+git commit -m "chore: remove generated files from repository"
+git push -u origin main
