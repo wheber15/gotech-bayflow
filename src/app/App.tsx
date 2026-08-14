@@ -7,42 +7,49 @@ import { ReportIssueForm } from "../features/reports/ReportIssueForm";
 import { ReportList } from "../features/reports/ReportList";
 import { nextReportId } from "../features/reports/report.utils";
 import { FloorReport, NewFloorReport } from "../features/reports/types";
+import { LoginScreen } from "../features/auth/LoginScreen";
+import { UserManagement } from "../features/auth/UserManagement";
+import { AppUser, LoginCredentials, LoginKind } from "../features/auth/auth.types";
+import { attemptLogin, unlockUser } from "../features/auth/auth.utils";
+import { mockUsers } from "../features/auth/mockUsers";
 
-type Role = "bay" | "admin";
 type Tab = "trailers" | "reports" | "admin";
 
 export function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [pin, setPin] = useState("");
-  const [role, setRole] = useState<Role>("bay");
+  const [users, setUsers] = useState<AppUser[]>(mockUsers);
+  const [currentUser, setCurrentUser] = useState<AppUser>();
   const [tab, setTab] = useState<Tab>("trailers");
   const [showReportForm, setShowReportForm] = useState(false);
   const [trailers, setTrailers] = useState<Trailer[]>(seedTrailers);
   const [reports, setReports] = useState<FloorReport[]>(seedReports);
   const pendingCount = useMemo(() => reports.filter(report => report.status === "PENDING").length, [reports]);
+  const isAdmin = currentUser?.role === "ADMIN";
 
   const updateTrailer = (id: number, patch: Partial<Trailer>) => setTrailers(current => current.map(trailer => trailer.id === id ? { ...trailer, ...patch } : trailer));
   const createReport = (input: NewFloorReport) => {
-    setReports(current => [{ ...input, id: nextReportId(current), createdAt: new Date().toISOString(), createdBy: role === "admin" ? "Logistics Admin" : "Bay Operator", status: "PENDING" }, ...current]);
+    setReports(current => [{ ...input, id: nextReportId(current), createdAt: new Date().toISOString(), createdBy: currentUser?.displayName ?? "Unknown user", status: "PENDING" }, ...current]);
     setShowReportForm(false);
   };
-  const completeReport = (id: string) => setReports(current => current.map(report => report.id === id ? { ...report, status: "COMPLETED", completedAt: new Date().toISOString(), completedBy: "Logistics Admin" } : report));
+  const completeReport = (id: string) => setReports(current => current.map(report => report.id === id ? { ...report, status: "COMPLETED", completedAt: new Date().toISOString(), completedBy: currentUser?.displayName ?? "Unknown admin" } : report));
+  const login = (kind: LoginKind, credentials: LoginCredentials) => {
+    const result = attemptLogin(users, kind, credentials);
+    setUsers(result.users);
+    if (result.user) { setCurrentUser(result.user); setTab("trailers") }
+    return result.error;
+  };
+  const signOut = () => { setCurrentUser(undefined); setTab("trailers"); setShowReportForm(false) };
+  const manuallyUnlockUser = (id: string) => { if (currentUser) setUsers(current => unlockUser(current, id, currentUser)) };
 
-  if (!loggedIn) return <div className="loginPage"><div className="loginCard">
-    <div className="brandMark"><Truck size={28}/></div><h1>BayFlow</h1><p>Trailer tracking and floor reports</p>
-    <label htmlFor="pin">PIN</label><input id="pin" inputMode="numeric" maxLength={4} placeholder="••••" value={pin} onChange={event => setPin(event.target.value.replace(/\D/g, ""))}/>
-    <div className="roleSwitch"><button className={role === "bay" ? "active" : ""} onClick={() => setRole("bay")}>Bay</button><button className={role === "admin" ? "active" : ""} onClick={() => setRole("admin")}>Admin</button></div>
-    <button className="primary" disabled={pin.length < 4} onClick={() => setLoggedIn(true)}>Sign in</button><small>Prototype: any 4-digit PIN works.</small>
-  </div></div>;
+  if (!currentUser) return <LoginScreen onLogin={login}/>;
 
   return <div className="appShell">
-    <header><div><strong>BayFlow</strong><span>{role === "admin" ? "Admin" : "Bay Operator"}</span></div><button className="iconBtn" onClick={() => setLoggedIn(false)} title="Sign out"><LogOut size={20}/></button></header>
-    <nav><button className={tab === "trailers" ? "active" : ""} onClick={() => setTab("trailers")}><Truck size={18}/>Trailers</button><button className={tab === "reports" ? "active" : ""} onClick={() => setTab("reports")}><Camera size={18}/>Reports {pendingCount > 0 && <b>{pendingCount}</b>}</button>{role === "admin" && <button className={tab === "admin" ? "active" : ""} onClick={() => setTab("admin")}><Shield size={18}/>Admin</button>}</nav>
+    <header><div><strong>BayFlow</strong><span>{currentUser.displayName} · {isAdmin ? "Admin" : "Bay Operator"}</span></div><button className="iconBtn" onClick={signOut} title="Sign out"><LogOut size={20}/></button></header>
+    <nav><button className={tab === "trailers" ? "active" : ""} onClick={() => setTab("trailers")}><Truck size={18}/>Trailers</button><button className={tab === "reports" ? "active" : ""} onClick={() => setTab("reports")}><Camera size={18}/>Reports {pendingCount > 0 && <b>{pendingCount}</b>}</button>{isAdmin && <button className={tab === "admin" ? "active" : ""} onClick={() => setTab("admin")}><Shield size={18}/>Admin</button>}</nav>
     <main>
-      {tab === "trailers" && <TrailerBoard trailers={trailers} canOperate={role === "bay"} onUpdate={updateTrailer}/>} 
-      {tab === "reports" && <><section className="sectionHead"><div><h2>Floor reports</h2><p>Report anything wrong on the floor. Reports do not block trailer work.</p></div>{!showReportForm && <button className="primary compact" onClick={() => setShowReportForm(true)}><Plus size={17}/>Report issue</button>}</section>{showReportForm && <ReportIssueForm onCancel={() => setShowReportForm(false)} onSubmit={createReport}/>}<ReportList reports={reports} canComplete={role === "admin"} onComplete={completeReport}/></>}
-      {tab === "admin" && role === "admin" && <AdminPlanning trailers={trailers} onUpdate={updateTrailer}/>} 
-    </main><footer>Prototype only · no company data connected</footer>
+      {tab === "trailers" && <TrailerBoard trailers={trailers} canOperate={!isAdmin} onUpdate={updateTrailer}/>} 
+      {tab === "reports" && <><section className="sectionHead"><div><h2>Floor reports</h2><p>Report anything wrong on the floor. Reports do not block trailer work.</p></div>{!showReportForm && <button className="primary compact" onClick={() => setShowReportForm(true)}><Plus size={17}/>Report issue</button>}</section>{showReportForm && <ReportIssueForm onCancel={() => setShowReportForm(false)} onSubmit={createReport}/>}<ReportList reports={reports} canComplete={isAdmin} onComplete={completeReport}/></>}
+      {tab === "admin" && isAdmin && <><AdminPlanning trailers={trailers} onUpdate={updateTrailer}/><UserManagement users={users} onUnlock={manuallyUnlockUser}/></>} 
+    </main><footer>Client-side prototype only · no production authentication</footer>
   </div>;
 }
 

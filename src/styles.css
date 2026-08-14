@@ -22,12 +22,11 @@ button { cursor: pointer; }
 .loginCard p { margin: 0 0 22px; color:#64748b; }
 .loginCard label { display:block; font-weight:700; margin-bottom:8px; }
 .loginCard input { width:100%; padding:14px 16px; border:1px solid #cbd5e1; border-radius:12px; font-size:24px; letter-spacing:8px; text-align:center; }
-.roleSwitch { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:14px 0; }
-.roleSwitch button { border:1px solid #cbd5e1; background:#f8fafc; padding:10px; border-radius:10px; }
-.roleSwitch button.active { background:#111827; color:white; border-color:#111827; }
 .primary { width:100%; border:0; background:#2563eb; color:white; padding:13px 16px; border-radius:11px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px; }
 .primary:disabled { opacity:.45; cursor:not-allowed; }
 .loginCard small { display:block; color:#94a3b8; text-align:center; margin-top:12px; }
+.entryCard { width:min(620px,100%); background:white; border-radius:22px; padding:32px; box-shadow:0 18px 60px rgba(15,23,42,.12); }.entryCard h1 { margin:16px 0 4px; }.entryCard > p { margin:0 0 22px; color:#64748b; }.loginChoices { display:grid; grid-template-columns:1fr 1fr; gap:14px; }.loginChoices button { min-height:112px; padding:18px; border:1px solid #cbd5e1; border-radius:15px; display:flex; align-items:center; gap:14px; text-align:left; }.loginChoices b, .loginChoices small { display:block; }.loginChoices b { font-size:18px; }.loginChoices small { margin-top:4px; color:#64748b; }.bayChoice { background:#eff6ff; color:#1d4ed8; }.adminChoice { background:#f8fafc; color:#334155; }.prototypeNote { display:block; margin-top:18px; text-align:center; color:#94a3b8; }
+.bayLoginPage { background:radial-gradient(circle at top,#bfdbfe 0,#eff6ff 40%,#f8fafc 100%); }.adminLoginPage { background:radial-gradient(circle at top,#cbd5e1 0,#f8fafc 42%,#eef2f7 100%); }.backBtn { border:0; background:transparent; color:#475569; padding:8px 0; margin-bottom:16px; display:flex; align-items:center; gap:6px; font-weight:700; }.loginForm { display:grid; gap:8px; }.loginForm label { margin:6px 0 0; }.loginCard .loginForm input { font-size:17px; letter-spacing:normal; text-align:left; }.bayLoginCard .loginForm input { min-height:58px; }.bayLoginCard .loginForm input[type="password"] { font-size:24px; letter-spacing:8px; text-align:center; }.bayLoginCard .primary { min-height:58px; margin-top:8px; font-size:17px; }.adminLoginCard .primary { margin-top:8px; }.loginError { padding:11px 12px; border:1px solid #fecaca; border-radius:10px; background:#fef2f2; color:#b91c1c; font-weight:700; }
 
 .appShell { min-height:100vh; }
 header {
@@ -97,6 +96,7 @@ main { max-width:1100px; margin:0 auto; padding:22px 16px 56px; }
 .reportMeta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:16px 0; }.reportMeta div { background:#f8fafc; padding:10px; border-radius:10px; }.reportMeta dt, .reportDescription span { font-size:11px; font-weight:900; letter-spacing:.05em; text-transform:uppercase; color:#64748b; }.reportMeta dd { margin:3px 0 0; font-weight:700; overflow-wrap:anywhere; }.reportDescription p { margin:5px 0 14px; white-space:pre-wrap; }.reportPhotos a { aspect-ratio:4/3; min-height:90px; }.completionNote { display:flex; gap:8px; margin-top:12px; padding:11px; color:#166534; background:#f0fdf4; border-radius:10px; font-size:13px; }
 
 .adminPanel { padding:16px; display:grid; gap:18px; }
+.userPanel { margin-top:18px; padding:18px; background:white; border:1px solid #e2e8f0; border-radius:16px; }.userPanel h3 { margin:0 0 4px; }.userPanel > div > p { margin:0 0 16px; color:#64748b; }.userList { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }.userCard { padding:15px; border:1px solid #e2e8f0; border-radius:13px; background:#f8fafc; }.userCard > div:first-child b, .userCard > div:first-child span { display:block; }.userCard > div:first-child span { margin-top:3px; color:#64748b; font-size:13px; }.userCard dl { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:14px 0; }.userCard dl div { padding:8px; background:white; border-radius:8px; }.userCard dt { color:#64748b; font-size:11px; font-weight:800; text-transform:uppercase; }.userCard dd { margin:3px 0 0; font-size:13px; font-weight:700; }.lockedText, .activeText { display:flex; align-items:center; gap:4px; }.lockedText { color:#b91c1c; }.activeText { color:#166534; }.userCard small { display:block; color:#64748b; margin-bottom:10px; }.unlockBtn { width:100%; border:1px solid #86efac; background:#f0fdf4; color:#166534; padding:10px; border-radius:9px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:7px; }
 .uploadBox { border:1px dashed #94a3b8; border-radius:14px; padding:22px; text-align:center; background:#f8fafc; }
 .uploadBox svg { color:#2563eb; }
 .uploadBox h3 { margin:8px 0 4px; }
@@ -117,6 +117,7 @@ footer { text-align:center; color:#94a3b8; font-size:12px; padding:24px; }
 .reportDetails { width:min(720px,100%); max-height:calc(100vh - 40px); overflow:auto; background:white; border-radius:18px; padding:22px; box-shadow:0 24px 70px rgba(15,23,42,.3); }
 
 @media (max-width: 640px) {
+  .loginPage { padding:14px; }.entryCard, .loginCard { padding:22px; }.loginChoices { grid-template-columns:1fr; }.loginChoices button { min-height:100px; }.bayLoginCard { padding:24px 20px; }.bayLoginCard .loginForm { gap:10px; }
   .sectionHead { align-items:flex-start; flex-direction:column; }
   .compact { width:100%; }
   .trailerGrid { grid-template-columns:1fr; }
@@ -124,4 +125,5 @@ footer { text-align:center; color:#94a3b8; font-size:12px; padding:24px; }
   main { padding:18px 12px 48px; }.reportFormPanel { padding:16px; }.reportForm { grid-template-columns:1fr; }.reportForm label, .wideField, .photoField, .formActions { grid-column:1; }.reportForm input, .reportForm select, .reportForm textarea { min-height:48px; }.formActions { flex-direction:column-reverse; }.formActions button { width:100%; min-height:48px; }.reportMeta { grid-template-columns:1fr; }.photoPreviewGrid, .reportPhotos { grid-template-columns:repeat(2,1fr); }
   .detailsBackdrop { padding:0; align-items:end; }.reportDetails { max-height:92vh; border-radius:18px 18px 0 0; padding:18px; }.detailsBtn { min-height:44px; }
   .loadingForm { grid-template-columns:1fr; }.loadingForm label, .loadingForm > div, .loadingForm .varianceWarning { grid-column:1; }.loadingForm > div { flex-direction:column-reverse; }.loadingForm button { min-height:46px; justify-content:center; }
+  .userList { grid-template-columns:1fr; }.userCard dl { grid-template-columns:1fr 1fr; }
 }

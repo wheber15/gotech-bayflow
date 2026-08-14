@@ -24,11 +24,11 @@ All operational state is held in React memory. Photographs use temporary browser
 
 ## Authentication status
 
-Authentication is a mock four-digit PIN and client-selected role. It provides no production security or server-side authorization.
+Authentication is a dedicated client-side prototype feature with separate Bay username/six-digit PIN and Admin username/password flows. Roles come from matched mock accounts. Per-account temporary lockout and Admin unlock state exist only in React memory; there is no production security or server-side authorization.
 
 ## Known prototype limitations
 
-Refreshes discard changes, photos are not persistent, IDs are only session-local, trailer timestamps are display-time strings, and authorization is UI-only.
+Refreshes discard changes, photos are not persistent, IDs and login lockouts are only session-local, mock credentials are visible in the client bundle, trailer timestamps are display-time strings, and authorization is UI-only.
 
 ## Expected future infrastructure
 
