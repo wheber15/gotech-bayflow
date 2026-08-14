@@ -12,11 +12,10 @@ export function attemptLogin(users: AppUser[], kind: LoginKind, credentials: Log
   const expectedRole = kind === "bay" ? "BAY_OPERATOR" : "ADMIN";
   const index = users.findIndex(user => user.username.toLowerCase() === username && user.role === expectedRole);
   const genericError = kind === "bay" ? "Invalid username or PIN" : "Invalid username or password";
-  if (index < 0) return { users, error: genericError };
+  if (index < 0) return { users, error: genericError, errorKind: "INVALID" };
 
   const account = users[index];
-  if (!account.active) return { users, error: genericError };
-  if (isUserLocked(account, now)) return { users, error: genericError, lockedUntil: account.lockedUntil };
+  if (!account.active || isUserLocked(account, now)) return { users, error: "This account is temporarily unavailable. Try again later or contact an administrator.", errorKind: "UNAVAILABLE" };
 
   const secretMatches = kind === "bay" ? account.pin === credentials.secret : account.password === credentials.secret;
   if (secretMatches) {
@@ -27,7 +26,14 @@ export function attemptLogin(users: AppUser[], kind: LoginKind, credentials: Log
   const failedLoginAttempts = account.failedLoginAttempts + 1;
   const shouldLock = failedLoginAttempts >= MAX_LOGIN_ATTEMPTS;
   const updated: AppUser = { ...account, failedLoginAttempts, lockedAt: shouldLock ? now.toISOString() : account.lockedAt, lockedUntil: shouldLock ? new Date(now.getTime() + LOCK_DURATION_MS).toISOString() : account.lockedUntil };
-  return { users: users.map((user, userIndex) => userIndex === index ? updated : user), error: genericError };
+  return { users: users.map((user, userIndex) => userIndex === index ? updated : user), error: genericError, errorKind: "INVALID" };
+}
+
+export function getAccountAccessState(user: AppUser, now = new Date()): "ACTIVE" | "INACTIVE" | "TEMPORARILY_LOCKED" | "MANUALLY_BLOCKED" {
+  if (!user.active) return "INACTIVE";
+  if (user.lockedByAdmin) return "MANUALLY_BLOCKED";
+  if (user.lockedUntil && new Date(user.lockedUntil) > now) return "TEMPORARILY_LOCKED";
+  return "ACTIVE";
 }
 
 export function unlockUser(users: AppUser[], userId: string, actor: AppUser, now = new Date()) {

@@ -19,4 +19,5 @@ export type AppUser = {
 
 export type LoginKind = "bay" | "admin";
 export type LoginCredentials = { username: string; secret: string };
-export type LoginResult = { users: AppUser[]; user?: AppUser; error?: string; lockedUntil?: string };
+export type LoginErrorKind = "INVALID" | "UNAVAILABLE";
+export type LoginResult = { users: AppUser[]; user?: AppUser; error?: string; errorKind?: LoginErrorKind };

@@ -30,6 +30,15 @@
 - Maintain semantic HTML, labelled inputs, accessible button names, useful image alt text, and visible focus states.
 - Build and run every configured test, lint, and build check after meaningful changes. Do not claim checks that were not run.
 
+## Authentication rules
+
+- Bay and Admin login flows remain separate; they are not a user-selectable role control.
+- Role is derived from the matched account and is never chosen during login.
+- Bay access uses username plus an exactly six-digit numeric PIN for operational convenience.
+- Admin access uses username plus password authentication.
+- Production authentication and authorization must be enforced by the server. Never treat client-side hiding as authorization.
+- Failed-login and lockout rules must eventually be enforced server-side.
+
 ## Change discipline
 
 - Keep trailer and Floor Report state separate.
