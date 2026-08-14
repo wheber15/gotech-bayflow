@@ -33,3 +33,11 @@ export function attemptLogin(users: AppUser[], kind: LoginKind, credentials: Log
 export function unlockUser(users: AppUser[], userId: string, actor: AppUser, now = new Date()) {
   return users.map(user => user.id === userId ? { ...user, failedLoginAttempts: 0, lockedUntil: undefined, lockedAt: undefined, lockedByAdmin: undefined, unlockedAt: now.toISOString(), unlockedBy: actor.displayName } : user);
 }
+
+export function setUserActive(users: AppUser[], userId: string, active: boolean) {
+  return users.map(user => user.id === userId ? { ...user, active } : user);
+}
+
+export function blockUser(users: AppUser[], userId: string, now = new Date()) {
+  return users.map(user => user.id === userId ? { ...user, lockedByAdmin: true, lockedAt: now.toISOString() } : user);
+}

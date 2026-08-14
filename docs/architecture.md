@@ -12,7 +12,7 @@ React 19, TypeScript in strict mode, Vite, Lucide icons, and a single global CSS
 
 ### Trailers
 
-The trailer feature owns the board, cards, domain type, and operational actions. `LOADED` and `LEFT_SITE` are separate states. The current prototype does not yet model an explicit `LOADING` state or actor audit fields.
+The trailer feature owns the date-based Admin planner, today-only Bay board, cards, domain type, date utilities, and operational actions. Every trailer has an operational `date` in `YYYY-MM-DD` format. Core statuses are `BOOKED`, `LOADED`, and `LEFT_SITE`; Driver In is optional timestamp detail. `LOADED` and `LEFT_SITE` are separate states.
 
 ### Floor Reports
 

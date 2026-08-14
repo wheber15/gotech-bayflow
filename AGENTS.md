@@ -6,7 +6,8 @@
 - `LOADED` means loading is finished and the trailer is ready and waiting for collection.
 - `LEFT_SITE` means the trailer has physically departed with the load.
 - Never merge or confuse `LOADED` and `LEFT_SITE`, infer departure from loading completion, or automatically transition between them.
-- Target trailer lifecycle: `BOOKED → DRIVER_IN → LOADING → LOADED → LEFT_SITE`. If the current model omits a state, do not silently invent transitions.
+- Core trailer statuses are `BOOKED → LOADED → LEFT_SITE`.
+- Driver arrival/check-in and other yard movements are optional timestamps or events, not required statuses.
 - Warehouse workflows should support operations. Operational variances should normally be recorded and flagged rather than block work.
 - Important actions should preserve WHAT happened, WHEN it happened, and WHO performed it. Do not silently overwrite operational history.
 - Floor Reports are independent from trailer tracking and must never block trailer operations.
